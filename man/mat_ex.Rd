@@ -3,7 +3,7 @@
 \docType{data}
 \name{mat_ex}
 \alias{mat_ex}
-\title{Example of a small flow data matrix}
+\title{Example of a small matrice}
 \description{
-Example of a small data, in format matrice
+Example of a small Origin-Destination flow dataset, in a matrice format
 }
