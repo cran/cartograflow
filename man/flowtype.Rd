@@ -4,14 +4,20 @@
 \alias{flowtype}
 \title{Compute flowdata types (volum, balance)}
 \usage{
-flowtype(tab, format, x)
+flowtype(tab, origin = NULL, destination = NULL, fij = NULL, format, x)
 }
 \arguments{
 \item{tab}{is the input flow dataset}
 
+\item{origin}{the place of origin code}
+
+\item{destination}{the place of destination code}
+
+\item{fij}{the flow value between origin and destination places}
+
 \item{format}{specify the flow dataset format, "M " for square matrix [n*n] or L for long [i,j,data]}
 
-\item{x}{enter the computation type : "flux", "transpose", "bivolum" and "bisold".}
+\item{x}{enter the computation type : "alltypes", "flux", "transpose", "bivolum", "bibal","biasym","bimin", "bimax","birange" and "bidisym"}
 }
 \description{
 Compute gross (volumn) and net (balance) flows from initial asymetric flow values
@@ -23,7 +29,7 @@ involved in an asymetric flow matrix (Fij<> Fji) several matrix :\cr
 - x = "flux" for remaining initial flow (Fij)\cr
 - x = "transpose" for reverse flow value (Fji)\cr
 - x = "bivolum" for bilateral gross flow Vij=(Fij+Fji)\cr
-- x = "bisold" for bilateral net flow Sij=(Fij-Fji) \cr
+- x = "bibal" for bilateral balance or net flow Sij=(Fij-Fji) \cr
 }
 \examples{
 library(cartograflow)
@@ -38,15 +44,15 @@ matflow <- flowtabmat(flows, matlist = "M")
 m <- flowtype(matflow, format = "M", x = "flux")
 m <- flowtype(matflow, format = "M", x = "transpose")
 m <- flowtype(matflow, format = "M", x = "bivolum")
-m <- flowtype(matflow, format = "M", x = "bisold")
+m <- flowtype(matflow, format = "M", x = "bibal")
 
 ## 1b:Computes flowtypes: Long format
 list <- flowtabmat(matflow, matlist = "L")
 colnames(list) <- c("i", "j", "Fij")
-l_all <- flowtype(list, format = "L", x = "all")
-l_sold <- flowtype(list, format = "L", x = "bisold")
+l_all <- flowtype(list,origin ="i",destination="j",fij="Fij", format = "L", x = "alltypes")
+l_sold <- flowtype(list, origin ="i",destination="j",fij="Fij",format = "L", x = "bibal")
 \donttest{
-# 2:flowmapping: example of bisold
+# 2:flowmapping: example of bibal
 flowmap(l_sold,
   format = "L", bkg, code = "EPT_NUM",
   filter = TRUE, threshold = 20, taille = 5

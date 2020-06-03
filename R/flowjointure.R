@@ -16,7 +16,7 @@
 #' @importFrom maptools readShapeSpatial
 #' @importFrom rlang .data
 #' @importFrom stats setNames
-#' @import sp
+#' @import sf
 #' @examples
 #' library(cartograflow)
 #' library(sf)

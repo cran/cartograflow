@@ -65,15 +65,15 @@ colnames(CODE)<-c("CODGEO")
 ## ----data_computing, warning=FALSE, echo=TRUE---------------------------------
 
 # Compute bilateral volum : FSij
-matflow_vol<-flowtype(matflow, format="M", "bivolum")
+matflow_vol<-flowtype(matflow, format="M", x="bivolum")
 
-tabflow_vol<-flowtype(tabflow, format="L", "bivolum")
+tabflow_vol<-flowtype(tabflow, origin ="i",destination="j",fij="Fij",format="L", x="bivolum")
 
 # Compute bilateral balance : FSij
-tabflow_net<-flowtype(tabflow, format="L", "bisold")
+tabflow_net<-flowtype(tabflow, origin ="i",destination="j",fij="Fij",format="L", x="bibal")
 
 # Compute all types of bilateral flows, in one 6 columns "L"format matrix
-tabflow_all<-flowtype(tabflow, format="L", x="all")
+tabflow_all<-flowtype(tabflow, origin ="i",destination="j",fij="Fij",format="L", x="alltypes")
 head(tabflow_all) 
  
 # Compute flow asymetry
