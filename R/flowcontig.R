@@ -37,33 +37,32 @@
 #' @export
 
 flowcontig <- function(bkg, code, k, algo) {
-  if (missing(algo)) {
-    algo <- "automatic"
-  }
-  else {
-    algo
-  }
+  
+  if (missing(algo)) { algo <- "automatic"}
+      else {algo}
 
   ordre1 <- function(bkg, code) {
-    carte <- as_Spatial(bkg)
-    contig <- gIntersects(carte, byid = TRUE, prepared = TRUE)
-    row.names(contig) <- carte@data[, code]
-    colnames(contig) <- carte@data[, code]
+    
+            carte <- as_Spatial(bkg)
+            contig <- gIntersects(carte, byid = TRUE, prepared = TRUE)
+            row.names(contig) <- carte@data[, code]
+            colnames(contig) <- carte@data[, code]
 
-    for (i in 1:nrow(contig)) {
-      for (j in 1:ncol(contig))
-      {
-        if (contig[i, j] == TRUE) {
-          contig[i, j] <- 1
-        }
-        if (contig[i, i] != 0) {
-          contig[i, i] <- 0
-        }
-      }
-    }
-    tab <- flowtabmat(contig, matlist = "L")
-    colnames(tab) <- c("CODE_i", "CODE_j", "cij")
-    ordre_1 <- tab[tab[, "cij"] != 0, ]
+            for (i in 1:nrow(contig)) {
+              for (j in 1:ncol(contig))
+              {
+                if (contig[i, j] == TRUE) {
+                  contig[i, j] <- 1
+                }
+                if (contig[i, i] != 0) {
+                  contig[i, i] <- 0
+                }
+              }
+            }
+            
+            tab <- flowtabmat(contig, matlist = "L")
+            colnames(tab) <- c("CODE_i", "CODE_j", "cij")
+            ordre_1 <- tab[tab[, "cij"] != 0, ]
   }
 
   contig_1 <- ordre1(bkg, code)
@@ -71,20 +70,21 @@ flowcontig <- function(bkg, code, k, algo) {
   graph_voisinage <- igraph::graph.data.frame(contig_1)
 
   contig_k <- igraph::distances(graph_voisinage,
-    v = V(graph_voisinage), to = V(graph_voisinage), mode = c("all", "out", "in"),
-    weights = NULL, algorithm = algo
+                                v = V(graph_voisinage), to = V(graph_voisinage), mode = c("all", "out", "in"),
+                                weights = NULL, algorithm = algo
   )
 
   tabcontig_k <- flowtabmat(contig_k, matlist = "L")
   colnames(tabcontig_k) <- c("i", "j", "ordre")
 
   tabcontig_k <- tabcontig_k %>%
-    filter(.data$ordre != 0) %>%
-    filter(.data$ordre != "Inf")
+                 filter(.data$ordre != 0) %>%
+                 filter(.data$ordre != "Inf")
+  
   max <- paste("ordre max =", max(tabcontig_k$ordre))
-  print(max)
-
+  
   tabcontig_k <- tabcontig_k %>%
-    filter(.data$ordre <= k)
+                 filter(.data$ordre <= k)
+  
   return(tabcontig_k)
 }

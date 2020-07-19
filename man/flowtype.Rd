@@ -2,9 +2,18 @@
 % Please edit documentation in R/flowtype.R
 \name{flowtype}
 \alias{flowtype}
-\title{Compute flowdata types (volum, balance)}
+\title{Compute bilateral several flow types}
 \usage{
-flowtype(tab, origin = NULL, destination = NULL, fij = NULL, format, x)
+flowtype(
+  tab,
+  origin = NULL,
+  destination = NULL,
+  fij = NULL,
+  format,
+  lowup,
+  net,
+  x
+)
 }
 \arguments{
 \item{tab}{is the input flow dataset}
@@ -17,19 +26,36 @@ flowtype(tab, origin = NULL, destination = NULL, fij = NULL, format, x)
 
 \item{format}{specify the flow dataset format, "M " for square matrix [n*n] or L for long [i,j,data]}
 
-\item{x}{enter the computation type : "alltypes", "flux", "transpose", "bivolum", "bibal","biasym","bimin", "bimax","birange" and "bidisym"}
+\item{lowup}{for extracting the lower or upper triangular sub-portion of the bilateral volum matrix. See Details.}
+
+\item{net}{for extracting the "positive" or the "negative" flow values of the bilateral balance) matrix}
+
+\item{x}{enter the flow indicator type : "alltypes", "flux", "transpose", "bivolum", "bibal","biasym","bimin", "bimax","birange" and "bidisym"}
 }
 \description{
-Compute gross (volumn) and net (balance) flows from initial asymetric flow values
+Compute bilateral flow type: volumn (gross), balance (net), asymetry, min/max ... from an initial asymetric matrix
 }
 \details{
 The matrice must be squared (if not, see \link{flowcarre}).
 This function compute for all pairs or origin-destination places (i,j)
 involved in an asymetric flow matrix (Fij<> Fji) several matrix :\cr
-- x = "flux" for remaining initial flow (Fij)\cr
-- x = "transpose" for reverse flow value (Fji)\cr
-- x = "bivolum" for bilateral gross flow Vij=(Fij+Fji)\cr
-- x = "bibal" for bilateral balance or net flow Sij=(Fij-Fji) \cr
+Param x:
+- x = "flux" for the initial flow: (Fij)\cr
+- x = "transpose" for the reverse flow value: (Fji) =t(Fij)\cr
+- x = "bivolum" for the bilateral volum or gross flow: FSij=(Fij+Fji)\cr
+- x = "bibal" for the bilateral balance or net flow: FBij=(Fij-Fji) \cr
+- x = "biasym" for asymetry of bilateral flow: FAij=(FBij/FSij)\cr
+- x = "bimin" for the minimum of bilateral flow: minFij=(Fij, Fji)\cr
+- x = "bimax" for the maximum of bilateral flow: Fij(Fij, Fji)\cr
+- x = "birange" for the amplitude of bilateral flows: rangeFij=(maxFij - minFij)\cr
+- x = "bidisym" for the bilateral disymetry: FDij=(rangeFij/FSij)
+- x = "alltypes" for computing all the available types of flows \cr
+Param lowup is for reducing the matrix:\cr
+- lowup ="up" for triangular part above the main diagonal \cr
+- lowup = "low" for triangular part below the main diagonal\cr
+Param net is for extracting positive or negative flow values of the bilateral balance (bibal matrix):\cr 
+- net ="negative" values\cr
+- net ="positive" values\cr
 }
 \examples{
 library(cartograflow)
@@ -39,7 +65,7 @@ bkg <- system.file("shape/MGP_TER.shp",
   lib.loc = NULL, mustWork = TRUE
 )
 
-## 1a:Computes flowtypes: Matrice format
+## 1a:Computes flowtypes: Matrix format
 matflow <- flowtabmat(flows, matlist = "M")
 m <- flowtype(matflow, format = "M", x = "flux")
 m <- flowtype(matflow, format = "M", x = "transpose")
@@ -47,15 +73,17 @@ m <- flowtype(matflow, format = "M", x = "bivolum")
 m <- flowtype(matflow, format = "M", x = "bibal")
 
 ## 1b:Computes flowtypes: Long format
-list <- flowtabmat(matflow, matlist = "L")
-colnames(list) <- c("i", "j", "Fij")
-l_all <- flowtype(list,origin ="i",destination="j",fij="Fij", format = "L", x = "alltypes")
-l_sold <- flowtype(list, origin ="i",destination="j",fij="Fij",format = "L", x = "bibal")
+types_all <- flowtype(flows,origin ="i",destination="j",fij="Fij", format = "L",
+x = "alltypes")
+bivol<- flowtype(flows,origin ="i",destination="j",fij="Fij",format = "L",
+x = "bivolum",lowup="up")
+bibal_net<- flowtype(flows,origin ="i",destination="j",fij="Fij",format = "L",
+x = "bibal", net="negative")
 \donttest{
-# 2:flowmapping: example of bibal
-flowmap(l_sold,
+# 2:flowmapping: example of bibal_net
+flowmap(bibal_net,
   format = "L", bkg, code = "EPT_NUM",
-  filter = TRUE, threshold = 20, taille = 5
+  filter = TRUE, threshold = 20, taille = 5, a.head = 1,
 )
 }
 }
