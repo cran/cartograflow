@@ -1,20 +1,21 @@
-#' @title Create a spatial join with flow
-#' @description Create an attribute spatial join between a flow dataset table and a map background
-#' @param DF.flow the input flow dataset table in long format
-#' @param origin ID origin head of dataset flow
-#' @param destination ID destination head of dataset flow
-#' @param DF.point point file
-#' @param id code of point file
-#' @param x coordinate X of the point file
-#' @param y coordinate Y of the point file
-#' @param geom choices files pt or area
-#' @param bkg the map background file, ie. a shapefile or json
-#' @return Resulting jointure table between flow dataset and map background
+#' @title Builds a spatial join with a flow dataset
+#' @description Builds a spatial join between a flow dataset and a
+#' spatial features layer (as a map background)
+#' @param DF.flow the input flow dataset as a dataframe
+#' @param origin the place of origin code
+#' @param destination the place of destination code
+#' @param DF.point a dataframe of points or places
+#' @param id dataframe of points or places file code
+#' @param x the X coordinate of the point or places
+#' @param y the Y coordinate of the point or places
+#' @param geom the geometry of the spatial features layer: points or areas
+#' @param bkg the spatial features layer
+#' @return the corresponding joint table between the flow dataset and the
+#' spatial feature layer
 #' @export
-#' @importFrom maptools readShapeSpatial
 #' @importFrom rlang .data
 #' @importFrom stats setNames
-#' @import sp
+#' @import sf
 #' @examples
 #' library(cartograflow)
 #' library(sf)
@@ -40,10 +41,10 @@ flowjointure <- function(geom, bkg, DF.flow, origin, destination,
     df.point <- DF.point %>% select(id, x, y)
 
     dff.jointure <- DF.flow %>%
-      left_join(df.point, by = setNames(id, nm = origin)) %>%
-      rename(Xi = x, Yi = y) %>%
-      left_join(df.point, by = setNames(id, nm = destination)) %>%
-      rename(Xj = x, Yj = y)
+                    left_join(df.point, by = setNames(id, nm = origin)) %>%
+                    rename(Xi = x, Yi = y) %>%
+                    left_join(df.point, by = setNames(id, nm = destination)) %>%
+                    rename(Xj = x, Yj = y)
     colnames(dff.jointure) <- c("i", "j", "ydata", "Xi", "Yi", "Xj", "Yj")
     return(dff.jointure)
   }
@@ -67,10 +68,10 @@ flowjointure <- function(geom, bkg, DF.flow, origin, destination,
     df.point <- p %>% select(id, x, y)
 
     dfp.jointure <- DF.flow %>%
-      left_join(df.point, by = setNames(id, nm = origin)) %>%
-      rename(Xi = x, Yi = y) %>%
-      left_join(df.point, by = setNames(id, nm = destination)) %>%
-      rename(Xj = x, Yj = y)
+                    left_join(df.point, by = setNames(id, nm = origin)) %>%
+                    rename(Xi = x, Yi = y) %>%
+                    left_join(df.point, by = setNames(id, nm = destination)) %>%
+                    rename(Xj = x, Yj = y)
     colnames(dfp.jointure) <- c("i", "j", "ydata", "Xi", "Yi", "geometry.X", "Xj", "Yj", "geometry.Y")
     return(dfp.jointure)
   }

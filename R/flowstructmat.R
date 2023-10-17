@@ -7,7 +7,7 @@
 #' library(cartograflow)
 #' data(flowdata)
 #'
-#' dim(mat_ex) # dimension fo the original matrice
+#' dim(mat_ex) # dimension for the original matrice
 #' ### 10 11  # first colum is fill with the ID
 #'
 #' tab <- flowstructmat(mat_ex)

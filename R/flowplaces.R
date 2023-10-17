@@ -34,9 +34,8 @@
 #' @export
 
 flowplaces <- function(tab,origin=NULL,destination=NULL,fij=NULL,format, x) {
-
-
-if (format == "L") {
+  
+  if (format == "L") {
     
                       tab <- tab %>% select(origin,destination,fij)
                       names(tab) <- c("i", "j", "Fij")
@@ -101,7 +100,7 @@ if (format == "L") {
                                 if (x == "degi") {
                                    tabOiDj <- tabOiDj %>% select(.data$i,.data$degi)
                                    return(tabOiDj)
-                                } 
+                                  } 
                                   
                                 if (x == "voli") {
                                    tabOiDj <- tabOiDj %>% select(.data$i,.data$voli)

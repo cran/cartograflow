@@ -5,7 +5,7 @@ Filtering Matrices for Thematic Flowmapping - Dealing with "spaghetti-effect"
 [![](https://cranlogs.r-pkg.org/badges/cartograflow?color=brightgreen)](https://cran.r-project.org/package=cartograflow)
 
 This package is designed to create the so-called **flowmaps**, thematic origin-destination (OD) maps by filtering matrices.
-It is based on different functions that are mainly used to prepare the flow dataset. Complementary packages are for the spatial objects processing with`{sp}` or `{sf}` and for the mapping purposes from`{Cartography}` except particular cases.
+It is based on different functions that are mainly used to prepare the flow dataset. Complementary packages are for the spatial objects processing sf package and for the mapping purposes from`{Cartography}` except particular cases.
 
 # List of functions
 
@@ -69,5 +69,5 @@ You have two ways to consider the distance travelled by flows :
 -`flowmap()` is to create a layer of lines and plot them, using a flow dataset and a spatial shape.
 
 ---
-References : this comes after Bahoken, Françoise (2016), _Contribution à la cartographie d'une matrice de flux_, Thèse en Géographie - Siences des territoires, URL : https://halshs.archives-ouvertes.fr/tel-01273776. 
+References : this comes after Bahoken, Françoise (2016), _Contribution à la cartographie d'une matrice de flux_, Thèse en Géographie - Siences des territoires.
                

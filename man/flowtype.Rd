@@ -53,16 +53,15 @@ Param x:
 Param lowup is for reducing the matrix:\cr
 - lowup ="up" for triangular part above the main diagonal \cr
 - lowup = "low" for triangular part below the main diagonal\cr
-Param net is for extracting positive or negative flow values of the bilateral balance (bibal matrix):\cr 
+Param net is for extracting positive or negative flow values of the bilateral balance (bibal matrix):\cr
 - net ="negative" values\cr
 - net ="positive" values\cr
 }
 \examples{
 library(cartograflow)
 data(flowdata)
-bkg <- system.file("shape/MGP_TER.shp",
-  package = "cartograflow",
-  lib.loc = NULL, mustWork = TRUE
+bkg <- system.file("shape/MGP_TER.shp",package = "cartograflow",
+                  lib.loc = NULL, mustWork = TRUE
 )
 
 ## 1a:Computes flowtypes: Matrix format
@@ -79,13 +78,6 @@ bivol<- flowtype(flows,origin ="i",destination="j",fij="Fij",format = "L",
 x = "bivolum",lowup="up")
 bibal_net<- flowtype(flows,origin ="i",destination="j",fij="Fij",format = "L",
 x = "bibal", net="negative")
-\donttest{
-# 2:flowmapping: example of bibal_net
-flowmap(bibal_net,
-  format = "L", bkg, code = "EPT_NUM",
-  filter = TRUE, threshold = 20, taille = 5, a.head = 1,
-)
-}
 }
 \references{
 Bahoken Francoise, 2016, L'approche cartographique de la décomposition des matrices de flux,

@@ -12,10 +12,10 @@
 #' The (k=1,2,...,k) order of adjacency or contiguity, of an areal spatial features
 #' background, is the number of spatial boundaries to be crossed between
 #' a couple of origin-destination (ODs) places. The k number can be assimilated to a shortest path between two pair of nodes
-#' Argument `k` is to enter the number k of the contiguity matrix to be constructed ;
-#' -k{ordre=1 : ODs places are adjacent, ie the flow have to cross only 1 boundary.}\cr
-#' -k{ordre=2 : ODs places are distant from 2 borders}\cr
-#' -k{ordre=k : ODs places are distant from k borders}\cr
+#' Argument `k` is to enter the number k of the contiguity matrix to be constructed ;\cr
+#' -ordre=1 : ODs places are adjacent, ie the flow have to cross only 1 boundary\cr
+#' -ordre=2 : ODs places are distant from 2 borders\cr
+#' -ordre=k : ODs places are distant from k borders\cr
 #' The function returns also the (k) number of the layer
 #' @examples
 #' library(cartograflow)
@@ -31,38 +31,42 @@
 #'   filter = FALSE
 #' )
 #' }
-#' @importFrom rgeos gIntersects
 #' @importFrom sf as_Spatial
 #' @importFrom igraph V
 #' @export
 
 flowcontig <- function(bkg, code, k, algo) {
-  
-  if (missing(algo)) { algo <- "automatic"}
-      else {algo}
+  if (missing(algo)) {
+       algo <- "automatic"
+  }
+  else {
+    algo
+  }
 
   ordre1 <- function(bkg, code) {
-    
-            carte <- as_Spatial(bkg)
-            contig <- gIntersects(carte, byid = TRUE, prepared = TRUE)
-            row.names(contig) <- carte@data[, code]
-            colnames(contig) <- carte@data[, code]
+                carte_sf <- st_as_sf(bkg, "sf")
+                contig<-st_intersects(x = carte_sf, y = carte_sf, sparse = FALSE, prepared = TRUE)
+                var <- paste(carte_sf[[code]], sep = "")
+                colnames(contig)<-var
+                rownames(contig)<-var
 
-            for (i in 1:nrow(contig)) {
-              for (j in 1:ncol(contig))
-              {
-                if (contig[i, j] == TRUE) {
-                  contig[i, j] <- 1
+                print("test pour new version")
+                for (i in 1:nrow(contig)) {
+                    for (j in 1:ncol(contig))
+                    {
+                      if (contig[i, j] == TRUE) {
+                        contig[i, j] <- 1
+                      }
+                      if (contig[i, i] != 0) {
+                        contig[i, i] <- 0
+                      }
+                    }
                 }
-                if (contig[i, i] != 0) {
-                  contig[i, i] <- 0
-                }
-              }
-            }
-            
-            tab <- flowtabmat(contig, matlist = "L")
-            colnames(tab) <- c("CODE_i", "CODE_j", "cij")
-            ordre_1 <- tab[tab[, "cij"] != 0, ]
+                tab <- flowtabmat(contig, matlist = "L")
+                colnames(tab) <- c("CODE_i", "CODE_j", "cij")
+                tab$CODE_i<-as.factor(tab$CODE_i)
+                tab$CODE_j<-as.factor(tab$CODE_j)
+                ordre_1 <- tab[tab[, "cij"] != 0, ]
   }
 
   contig_1 <- ordre1(bkg, code)
@@ -70,21 +74,22 @@ flowcontig <- function(bkg, code, k, algo) {
   graph_voisinage <- igraph::graph.data.frame(contig_1)
 
   contig_k <- igraph::distances(graph_voisinage,
-                                v = V(graph_voisinage), to = V(graph_voisinage), mode = c("all", "out", "in"),
-                                weights = NULL, algorithm = algo
+              v = V(graph_voisinage), to = V(graph_voisinage), mode = c("all", "out", "in"),
+              weights = NULL, algorithm = algo
   )
 
   tabcontig_k <- flowtabmat(contig_k, matlist = "L")
   colnames(tabcontig_k) <- c("i", "j", "ordre")
+  tabcontig_k$i<-as.factor(tabcontig_k$i)
+  tabcontig_k$j<-as.factor(tabcontig_k$j)
 
   tabcontig_k <- tabcontig_k %>%
                  filter(.data$ordre != 0) %>%
                  filter(.data$ordre != "Inf")
-  
   max <- paste("ordre max =", max(tabcontig_k$ordre))
-  
-  tabcontig_k <- tabcontig_k %>%
-                 filter(.data$ordre <= k)
-  
-  return(tabcontig_k)
+  print(max)
+
+  tabcontig_k <- tabcontig_k %>% filter(.data$ordre <= k)
+  resultat<-as.data.frame(tabcontig_k, row.names=NULL)
+  return(resultat)
 }

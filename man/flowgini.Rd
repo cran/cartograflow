@@ -35,7 +35,7 @@ flowgini(...,lorenz.plot = TRUE) for ploting Lorenz curve  associate to the gini
 library(cartograflow)
 data(flowdata)
 # Computes Gini's coefficent
-tabgini <- flowgini(ODpts = flows, origin = "i", destination = "j", 
+tabgini <- flowgini(ODpts = flows, origin = "i", destination = "j",
                      valflow = "Fij", lorenz.plot = FALSE)
 # Plot Lorenz curve
 flowgini(ODpts = flows, origin = "i", dest = "j", valflow = "Fij", lorenz.plot = TRUE)

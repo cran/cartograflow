@@ -30,14 +30,13 @@
 #' DOI : 10.4000/netcom.2565. \cr
 #' Grasland Claude, 2014, "Flows analysis carto", unpublished R functions.
 #' @import dplyr
-#' @import sp
 #' @importFrom rlang .data
 #' @importFrom utils tail
 #' @examples
 #' library(cartograflow)
 #' data(flowdata)
 #' # Computes Gini's coefficent
-#' tabgini <- flowgini(ODpts = flows, origin = "i", destination = "j", 
+#' tabgini <- flowgini(ODpts = flows, origin = "i", destination = "j",
 #'                      valflow = "Fij", lorenz.plot = FALSE)
 #' # Plot Lorenz curve
 #' flowgini(ODpts = flows, origin = "i", dest = "j", valflow = "Fij", lorenz.plot = TRUE)
@@ -46,43 +45,40 @@
 
 flowgini <- function(ODpts, origin, destination, valflow, lorenz.plot) {
   gini <- function(vec1, vec2) {
-    tot <- vec2[1] / 2 * vec1[1]
-    i <- 2
-    while (i <= length(vec1)) {
-      tot <- tot + (vec1[i] - vec1[i - 1]) * (vec2[i] + vec2[i - 1]) / 2
-      i <- i + 1
-    }
-    res <- 2 * (0.5 - tot)
-    return(res)
+                    tot <- vec2[1] / 2 * vec1[1]
+                    i <- 2
+                    while (i <= length(vec1)) {
+                      tot <- tot + (vec1[i] - vec1[i - 1]) * (vec2[i] + vec2[i - 1]) / 2
+                      i <- i + 1
+                    }
+                    res <- 2 * (0.5 - tot)
+                    return(res)
   }
 
   ginigraph <- function(x, y) {
-    
-          p <- ggplot(x) +
-               geom_line(aes(x = .data$flowcum, y = .data$linkcum)) +
-               geom_line(aes(x = .data$flowcum, y = .data$flowcum)) +
-               xlab("Cumulative links") + ylab("Cumulative flows") +
-               ggtitle(paste("Gini's coefficent =", round(y * 100, 2), " %")) +
-               theme(
-                    panel.background = element_blank(),
-                    panel.grid.minor = element_blank(),
-                    panel.grid.major = element_line(color = "gray50", size = 0.5),
-                    panel.grid.major.x = element_blank(),
-                    axis.text.y = element_text(colour = "#68382C", size = 9)
-              )
-          
-             ggplotly(p) %>% layout(dragmode = "select")
+                    p <- ggplot(x) +
+                      geom_line(aes(x = x$flowcum, y = x$linkcum)) +
+                      geom_line(aes(x = x$flowcum, y = x$flowcum)) +
+                      xlab("Cumulative links") + ylab("Cumulative flows") +
+                      ggtitle(paste("Gini's coefficent =", round(y * 100, 2), " %")) +
+                      theme(
+                        panel.background = element_blank(),
+                        panel.grid.minor = element_blank(),
+                        panel.grid.major = element_line(color = "gray50", size = 0.5),
+                        panel.grid.major.x = element_blank(),
+                        axis.text.y = element_text(colour = "#68382C", size = 9)
+                      )
+                    ggplotly(p) %>% layout(dragmode = "select")
   }
 
   gini.tab <- function(g.tab) {
-    
-              gini.tab <- g.tab
-              gini.tab$link <- 1
-              gini.tab <- gini.tab[gini.tab[, valflow] > 0, ]
-              gini.tab <- gini.tab[order(gini.tab[, valflow], decreasing = TRUE), ]
-              gini.tab$flowcum <- cumsum(gini.tab[, valflow]) / sum(gini.tab[, valflow])
-              gini.tab$linkcum <- cumsum(gini.tab$link) / sum(gini.tab$link)
-              return(gini.tab)
+                      gini.tab <- g.tab
+                      gini.tab$link <- 1
+                      gini.tab <- gini.tab[gini.tab[, valflow] > 0, ]
+                      gini.tab <- gini.tab[order(gini.tab[, valflow], decreasing = TRUE), ]
+                      gini.tab$flowcum <- cumsum(gini.tab[, valflow]) / sum(gini.tab[, valflow])
+                      gini.tab$linkcum <- cumsum(gini.tab$link) / sum(gini.tab$link)
+                      return(gini.tab)
   }
 
   tabgini <- gini.tab(ODpts)

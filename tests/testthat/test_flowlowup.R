@@ -1,6 +1,10 @@
 #' @title Extracts the triangular sub-matrix of flows
 #' @description Extracts the upper or lower triangular part of a matrix
 #' @param tab is the input flow dataset
+#' @param fij the flow value between origin and destination places
+#' @param origin the place of origin code
+#' @param destination the place of destination code
+#' @param lowup for selecting lower or upper triangular sub-portion of the original matrix. See Details.
 #' @param format specify the flow dataset format, "M " for square matrix [n*n] or "L" for long [i,j,data]
 #' @param x enter the Enter the triangular part to be extracted: "low", "up". See Details.
 #' @details 
@@ -14,14 +18,13 @@
 #' library(cartograflow)
 #' data(flowdata)
 #' 
-#' Extract the upper part of the matrix : Long format
-#' tab_up <- flowlowup(tab, format="L", lowup="up")
-#' tab_net_pos<flowlowup(tab, format="L", lowup="net", net="positive")
+#' ###Extract the upper part of the matrix : Long format
+#' tab_up <- flowlowup(flows, format="L", lowup="up")
+#' tab_low<-flowlowup(flows, format="L", lowup="low")
 #' 
 #' @export
 
 flowlowup <- function(tab,origin=NULL,destination=NULL,fij=NULL,lowup, format, x) {
-  
   
   if (format == "L"){
     

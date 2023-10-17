@@ -1,22 +1,22 @@
 #' @title Computation of a global concentration criterion of flows values or features
-#' @description
-#' \code{Computation of a global selection criterion for thresholding flow information and/or features before mapping.}\cr
+#' @description Computation of a global selection criterion 
+#' for filtering flows values or flow features.\cr
 #' To be use after \link{flowgini} and before \link{flowmap}.
-#' @param tab flow dataset from \link{flowgini}
-#' @param fij colnames of the flows
-#' @param critflow level of flow significativity. See Details.
-#' @param critlink level of features density. See Details.
+#' @param tab input flow dataset from \link{flowgini}
+#' @param fij flow value between origin and destination places
+#' @param critflow desired level of information significativity. See Details.
+#' @param critlink desired level of features density. See Details.
 #' @param result resulting filtering criterion value. See Details.
 #' @details
-#' -critflow =  desired level of flow's information significativity (e.g. 80%)
-#'  of the total information ;\cr
-#' -critlink = desired level of flow's features density (e.g. 20%) of the flow
-#'        features that represents "more significant information.
+#' -critflow =  desired level of flow's information significativity
+#' (e.g. 80%) of the total information ; \cr
+#' -critlink = desired level of flow's features density (e.g. 20%) 
+#' of the flow features that represents the more significant information. \cr
 #'
 #' -result="density" returns the desired level of features density as
-#'        a % of total features ;\cr
-#' -result = "significativity" returns the level of flow significativity as a
-#'        % of total of flow information ;
+#' a % of total features ; \cr
+#' -result = "significativity" returns the level of flow significativity 
+#' as a % of total of flow information ;
 #' @examples
 #' library(cartograflow)
 #' data(flowdata)
@@ -60,44 +60,52 @@
 
 flowanalysis <- function(tab, fij = NULL, critflow, critlink, result) {
   if (result == "signif") {
-    if (missing(critflow)) {
-      stop("you must enter a value for the critflow when you signif ", call. = FALSE)
-    }
-    flow.select <- tab[tab$flowcum < critflow, ]
-    x <- tail(flow.select, 1)
-    if (!is.null(fij)) {
-      flow.seuil <- x[, fij]
-    }
-    else {
-      flow.seuil <- x[3]
-    }
-    flow.critlink <- x$linkcum
-    gini.signif <- paste(
-      "threshold = ", round(flow.seuil, 0), " --- ",
-      "flows = ", round(critflow * 100, 2), "% --- ",
-      "links = ", round(flow.critlink * 100, 2), "%"
-    )
-    return(gini.signif)
+    
+                          if (missing(critflow)) {
+                            stop("you must enter a value for the critflow when you signif ", call. = FALSE)
+                          }
+    
+                          flow.select <- tab[tab$flowcum < critflow, ]
+                          x <- tail(flow.select, 1)
+                          
+                          if (!is.null(fij)) {
+                            flow.seuil <- x[, fij]
+                          }
+                          else {
+                            flow.seuil <- x[3]
+                          }
+                          
+                          flow.critlink <- x$linkcum
+                          gini.signif <- paste(
+                            "threshold = ", round(flow.seuil, 0), " --- ",
+                            "flows = ", round(critflow * 100, 2), "% --- ",
+                            "links = ", round(flow.critlink * 100, 2), "%"
+                          )
+                          return(gini.signif)
   }
 
   if (result == "density") {
-    if (missing(critlink)) {
-      stop("you must enter a value for the critlink when you used density", call. = FALSE)
-    }
-    link.select <- tab[tab$linkcum < critlink, ]
-    y <- tail(link.select, 1)
-    if (!is.null(fij)) {
-      link.seuil <- y[, fij]
-    }
-    else {
-      link.seuil <- y[3]
-    }
-    link.critflow <- y$flowcum
-    gini.density <- paste(
-      "threshold = ", round(link.seuil, 0), " --- ",
-      "flows = ", round(link.critflow * 100, 2), "% --- ",
-      "links = ", round(critlink * 100, 2), "%"
-    )
-    return(gini.density)
+    
+                            if (missing(critlink)) {
+                              stop("you must enter a value for the critlink when you used density", call. = FALSE)
+                            }
+    
+                            link.select <- tab[tab$linkcum < critlink, ]
+                            y <- tail(link.select, 1)
+                            
+                            if (!is.null(fij)) {
+                              link.seuil <- y[, fij]
+                            }
+                            else {
+                              link.seuil <- y[3]
+                            }
+                            
+                            link.critflow <- y$flowcum
+                            gini.density <- paste(
+                              "threshold = ", round(link.seuil, 0), " --- ",
+                              "flows = ", round(link.critflow * 100, 2), "% --- ",
+                              "links = ", round(critlink * 100, 2), "%"
+                            )
+                            return(gini.density)
   }
 }

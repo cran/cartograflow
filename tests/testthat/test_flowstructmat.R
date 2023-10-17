@@ -1,7 +1,7 @@
 #' @title Structuring a matrix
-#' @description Fixes an ID shift in the flow  matrix (to bo use with \link{flowjointure} if necessary and \link{flowtabmat})
-#' @param z The flow dataset is in the matrice format where the first column is filled with the ID
-#' @return A flowdataset with an usable format
+#' @description Fixes an ID shift in the flow matrix (to bo use with \link{flowjointure} if necessary and \link{flowtabmat})
+#' @param z The input flow dataset in the matrice format where the first column is filled with the ID
+#' @return A flow dataset with an usable format
 #' @export
 #' @examples
 #' library(cartograflow)
@@ -16,6 +16,5 @@
 flowstructmat <- function(z) {
   m <- as.matrix(z[, -1])
   row.names(m) <- z[, 1]
-  class(m)
-  resul <- m
+  return(m)
 }

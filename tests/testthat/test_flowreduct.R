@@ -1,22 +1,24 @@
-#' @title Flow matrice reduction according to another matrix
+#' @title Flow matrix reduction according to another matrix
 #' @description
-#' Reduces a flow dataset according to an external matrix (eg. distance travelled)
-#' Computes geographical movements (by weighting a flow dataset according to a distance criterion)
-#' @param tab is the input flowdata set.
-#' @param tab.metric is the table of distance (continuous dataset) or contiguity (ordinal dataset)
-#' @param metric  See Details.
-#' @param d.criteria is the continuous distance thresholding parameter. See Details.
-#' @param d distance thresholds criterion.
-#' @return A flow dataset with continuous euclidian distances calculations
+#' Reduces a flow dataset according to an external matrix, eg. a matrix of travelled distance.\cr 
+#' Builds geographical movements,  by weighting a flow dataset according to a distance criterion.
+#' @param tab is the input flowdata set
+#' @param tab.metric the distance dataset
+#' @param metric select "continuous" or "ordinal" metric. See Details
+#' @param d.criteria is for selecting "dmin" or "dmax" distance criteria for "continuous" metric. See Details.
+#' @param d is the value of the selected "dmin" or "dmax". see Details
+#' @return A flow dataset with distances computations and flow reduction
 #' @details
-#' -- Metric is 'continous" for distance as euclidian, maximum, manhattan, etc.\cr
-#' See \link{flowdist} for computing neighbourhood ordinal distance matrix.
+#' The involved metric can be continous or not.\cr
+#' 
+#' (1) Metric is 'continous" for distance as euclidian, maximum, manhattan, etc.\cr
+#' See \link{flowdist} \cr
+#' - Metric is 'ordinal" for computing neighbourhood ordinal distance matrix.
+#' -- Select ="dmin" for reducing flow dataset to flow values that are up or equal to the dmin distance parameter  (Fij>=dmin);\cr
+#' -- select ="dmax" for reducing flow dataset to values that are less or equal to the dmax distance parameter(Fij=<dmin).\cr \cr
 #'
-#' select ="dmin" for reducing flow dataset to values that are up or equal to the dmin distance parameter ;\cr
-#' select ="dmax" for reducing flow dataset to values that are less or equal to the dmax distance.
-#'
-#' -- Metric is 'ordinal' for neighbourhood ordinal distance so-called k contiguity.\cr
-#' See \link{flowcontig} for computing continuous distance matrix
+#' - Metric is 'ordinal' for computing neighbourhood ordinal distance with k contiguity.\cr
+#' See \link{flowcontig} for computing ordinal distance matrix \cr
 #' @import dplyr
 #' @importFrom rlang .data
 #' @importFrom utils tail
@@ -49,33 +51,35 @@ flowreduct <- function(tab, tab.metric, metric, d.criteria, d) {
   }
 
   if (metric == "ordinal") {
-    tabflow <- merge(tab, tab.metric, by = c("i", "j"), all.X = TRUE, all.Y = TRUE)
-    colnames(tabflow) <- c("i", "j", "flow", "ordre.c")
-    # tabflow_r<-tabflow %>% select(i,j,flow)
-    return(tabflow)
+                            tabflow <- merge(tab, tab.metric, by = c("i", "j"), all.X = TRUE, all.Y = TRUE)
+                            colnames(tabflow) <- c("i", "j", "flow", "ordre.c")
+                            return(tabflow)
   }
 
   if (metric == "continous") {
-    if (missing(d.criteria)) {
-      message("put the distance selection : dmax or dmin")
-    }
-    if (missing(d)) {
-      message("put the distance variable")
-    }
-    colnames(tab) <- c("i", "j", "ydata")
-    tabflow <- merge(tab, tab.metric, by = c("i", "j"), all.X = TRUE, all.Y = TRUE)
-
-    if (d.criteria == "dmin") {
-      tabreduct <- tabflow %>%
-        mutate(flowfilter = ifelse(.data$distance >= d, .data$ydata, 0)) %>%
-        filter(.data$distance != 0)
-      return(tabreduct)
-    }
-    if (d.criteria == "dmax") {
-      tabreduct <- tabflow %>%
-        mutate(flowfilter = ifelse(.data$distance < d, .data$ydata, 0)) %>%
-        filter(.data$distance != 0)
-      return(tabreduct)
-    }
+                              if (missing(d.criteria)) {
+                                message("put the distance selection : dmax or dmin")
+                              }
+    
+                              if (missing(d)) {
+                                message("put the distance variable")
+                              }
+    
+                              colnames(tab) <- c("i", "j", "ydata")
+                              tabflow <- merge(tab, tab.metric, by = c("i", "j"), all.X = TRUE, all.Y = TRUE)
+                          
+                              if (d.criteria == "dmin") {
+                                                        tabreduct <- tabflow %>%
+                                                                     mutate(flowfilter = ifelse(.data$distance >= d, .data$ydata, 0)) %>%
+                                                                     filter(.data$flowfilter != 0 , .data$distance !=0)
+                                                        return(tabreduct)
+                              }
+                              
+                              if (d.criteria == "dmax") {
+                                                        tabreduct <- tabflow %>%
+                                                                     mutate(flowfilter = ifelse(.data$distance < d, .data$ydata, 0)) %>%
+                                                                     filter(.data$flowfilter != 0 , .data$distance !=0)
+                                                        return(tabreduct)
+                              }
   }
 }

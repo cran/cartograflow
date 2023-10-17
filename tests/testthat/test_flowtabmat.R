@@ -1,12 +1,13 @@
 #' @title Changing the format of a flow dataset
-#' @description Transform a flow dataset from long to matrice format, and vice versa
+#' @description Transform a flow dataset from long to matrice format, and vice versa. 
+#' Square matrice.
 #' @param tab flow dasaset, in matrice or long format
-#' @param matlist choose matrice or long as the result format. See Details.
-#' @return flow data in matrice or long format
+#' @param matlist choose "matrice" or "long" for the resulting format. See Details.
+#' @return a flow dataset in matrice or in long format
 #' @export
 #' @details
-#' -- From long to matrice format [n*n]: matlist="M";\cr
-#' -- From matrice to long format [i,j,Fij]: matlist="L".
+#' - matlist="M" from long (3 columns : origin, destination, flow) to matrice format [n*n];\cr
+#' - matlist="L" from matrice to long format.
 #' @examples
 #' library(cartograflow)
 #' data(flowdata)

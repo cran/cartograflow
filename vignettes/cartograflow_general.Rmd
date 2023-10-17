@@ -484,5 +484,5 @@ https://github.com/fbahoken/cartogRaflow/tree/master/vignettes
 
 ## Reference
 
--- Bahoken Francoise (2016), Programmes pour R/Rtudio annexés, in :  _Contribution à la cartographie d'une matrix de flux_, Thèse de doctorat, Université Paris 7, pp. 325-346. URL  : https://halshs.archives-ouvertes.fr/tel-01273776, pp. 480-520.
+-- Bahoken Francoise (2016), Programmes pour R/Rtudio annexés, in :  _Contribution à la cartographie d'une matrix de flux_, Thèse de doctorat, Université Paris 7, pp. 480-520.
 

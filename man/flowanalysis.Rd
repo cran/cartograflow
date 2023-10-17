@@ -18,19 +18,19 @@ flowanalysis(tab, fij = NULL, critflow, critlink, result)
 \item{result}{resulting filtering criterion value. See Details.}
 }
 \description{
-Computation of a global selection criterion 
+Computation of a global selection criterion
 for filtering flows values or flow features.\cr
 To be use after \link{flowgini} and before \link{flowmap}.
 }
 \details{
 -critflow =  desired level of flow's information significativity
 (e.g. 80%) of the total information ; \cr
--critlink = desired level of flow's features density (e.g. 20%) 
+-critlink = desired level of flow's features density (e.g. 20%)
 of the flow features that represents the more significant information. \cr
 
 -result="density" returns the desired level of features density as
 a % of total features ; \cr
--result = "significativity" returns the level of flow significativity 
+-result = "significativity" returns the level of flow significativity
 as a % of total of flow information ;
 }
 \examples{
@@ -38,35 +38,20 @@ library(cartograflow)
 data(flowdata)
 
 # 1/4: Computes Gini's coefficent
-tabgini <- flowgini(ODpts = flows, origin = "i", destination = "j", 
+tabgini <- flowgini(ODpts = flows, origin = "i", destination = "j",
                      valflow = "Fij", lorenz.plot = FALSE)
 ### [1] Gini's coefficent = 73.16 \%
 \donttest{
 # 2/4: Plot Lorenz curve
-flowgini(tab_gini,
-  format = "L", origin = "i", dest = "j", valflow = "ydata",
-  bkg, code = "EPT_NUM", lorenz.plot = TRUE
+flowgini(tabgini,
+        origin = "i", dest = "j", valflow = "Fij",
+        lorenz.plot = TRUE
 )
 }
 # 3/4: Compute critflow filtering parameter
 # critflow = 0.8 #selected criterion
 flowanalysis(tabgini, critflow = 0.8, result = "signif")
 ### [1] "threshold =  11238  ---  flows =  80 \% ---  links =  22.94 \%"
-
-# 4/4: Plot the flowmap
-\donttest{
-flowmap(
-  tab = tabflow, fij = "Fij", origin.f = "i", destination.f = "j",
-  bkg = map, code = "EPT_NUM", nodes.X = "X", nodes.Y = "Y",
-  filter = TRUE,
-  threshold = 11238,
-  taille = 8,
-  a.head = 1,
-  a.length = 0.11,
-  a.angle = 30,
-  a.col = "#3f4247"
-)
-}
 
 }
 \references{

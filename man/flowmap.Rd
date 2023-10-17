@@ -56,7 +56,7 @@ flowmap(
 
 \item{taille}{the value of the width of the flow feature}
 
-\item{a.head}{for arrow's head is the arrow head parameter code. 
+\item{a.head}{for arrow's head is the arrow head parameter code.
 It allows to choose the kind of arrow. See Details}
 
 \item{a.length}{for arrow's length is the length of the edges of the arrow head (in inches)}
@@ -81,7 +81,7 @@ Mapping of an origin-destination flow matrix
 The input .csv flow dataset must be first converted to a dataframe
 for optimal performance (troubles remains with tibble format)\cr \cr
 
-- filter is "FALSE" means that all the flow value will be plot as segments [(n*(n-1)], 
+- filter is "FALSE" means that all the flow value will be plot as segments [(n*(n-1)],
 i.e. all the OD matrice's cells out of the main diagonal will be plot.\cr
 - filter is "TRUE" means only non-zero values will be plot,
 i.e. existing links with or without threshold.\cr
@@ -95,6 +95,7 @@ Flow features are plot as segments betwwen (x0,y0) and (x1,y1)\cr
 -- code="3" : an arrow is draw at both nodes.\cr
 }
 \examples{
+rm(list=ls())
 library(cartograflow)
 library(sf)
 data(flowdata)
@@ -107,15 +108,4 @@ flowmap(
   bkg = map,add=TRUE, code = "EPT_NUM", nodes.X = "X", nodes.Y = "Y",
   filter = FALSE
 )
-\donttest{
-# example with nodes files
-map <- st_read("MGP_territoires.json")
-pt <- read.csv2("points.csv")# points files origin destination
-flows<-red.cs2("flows.csv") # flows files 
-par(bg = "NA")
-plot(st_geometry(map), col = "blue")
-flowmap(tab = flows, fij = "d", origin.f = "a", destination.f = "b",
-        crs=4326,nodes = pt, code = "EPT_NUM", nodes.X = "X", nodes.Y = "Y",
-        filter = TRUE,add=TRUE,threshold = 10, taille = 8,arr.length = 0.1)
-}
 }

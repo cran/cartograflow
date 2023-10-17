@@ -12,7 +12,18 @@
 #' \code{Variable (count) is the frequency of the (i,j) couple of places.}\cr
 #' @docType data
 NULL
-
+#' @title COD_GEO_EPT
+#' @name COD_GEO_EPT
+#' @description
+#' \code{data for example}
+#' @docType data
+NULL
+#' @title MOBPRO_ETP
+#' @name MOBPRO_ETP
+#' @description
+#' \code{data for example}
+#' @docType data
+NULL
 #' @title Geographical ID
 #' @name geoid
 #' @description
@@ -22,7 +33,6 @@ NULL
 #' @source \url{https://www.insee.fr/fr/statistiques/fichier/3566008/rp2015_mobpro_txt.zip}
 #' @docType data
 NULL
-
 #' @title Example of a small matrice
 #' @name mat_ex
 #' @description Example of a small Origin-Destination flow dataset, in a matrice format

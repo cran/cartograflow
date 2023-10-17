@@ -19,33 +19,33 @@
 #' @importFrom reshape2 acast
 
 flowtabmat <- function(tab, matlist) {
-  if (matlist == "L") {
-    if (nrow(tab) != ncol(tab)) {
-      message("your matrix is not usable, please use the function cartograflow::flowstructmat()")
-      l.liste <- melt(tab)
-    }
-    if (nrow(tab) == ncol(tab)) {
-      l.liste <- melt(tab, na.rm = TRUE)
-    }
-    names(l.liste) <- c("i", "j", "ydata")
-    return(l.liste)
+                      if (matlist == "L") {
+                        if (nrow(tab) != ncol(tab)) {
+                          message("your matrix is not usable, please use the function cartograflow::flowstructmat()")
+                          l.liste <- melt(tab)
+                        }
+                        if (nrow(tab) == ncol(tab)) {
+                          l.liste <- melt(tab, na.rm = TRUE)
+                        }
+                        names(l.liste) <- c("i", "j", "ydata")
+                        return(l.liste)
   }
   if (matlist == "M") {
-    m.mat <- acast(tab, i ~ j)
-    for (i in 1:nrow(m.mat)) {
-      for (j in 1:ncol(m.mat))
-      {
-        if (is.na.data.frame(m.mat[i, j]) == TRUE) {
-          m.mat[i, j] <- 0
-        }
-      }
-    }
-    if (nrow(m.mat) != ncol(m.mat)) {
-      message("warning:your matrix is not square!")
-    }
-    if (nrow(m.mat) == ncol(m.mat)) {
-      message("great:your matrix is square!")
-    }
-    return(m.mat)
-  }
+                      m.mat <- acast(tab, i ~ j)
+                      for (i in 1:nrow(m.mat)) {
+                        for (j in 1:ncol(m.mat))
+                        {
+                          if (is.na.data.frame(m.mat[i, j]) == TRUE) {
+                            m.mat[i, j] <- 0
+                          }
+                        }
+                      }
+                      if (nrow(m.mat) != ncol(m.mat)) {
+                        message("warning:your matrix is not square!")
+                      }
+                      if (nrow(m.mat) == ncol(m.mat)) {
+                        message("great:your matrix is square!")
+                      }
+                      return(m.mat)
+                    }
 }

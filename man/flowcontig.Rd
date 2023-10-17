@@ -27,10 +27,10 @@ The result is a neighbourhood graph that can be used for filtering flow values b
 The (k=1,2,...,k) order of adjacency or contiguity, of an areal spatial features
 background, is the number of spatial boundaries to be crossed between
 a couple of origin-destination (ODs) places. The k number can be assimilated to a shortest path between two pair of nodes
-Argument `k` is to enter the number k of the contiguity matrix to be constructed ;
--k{ordre=1 : ODs places are adjacent, ie the flow have to cross only 1 boundary.}\cr
--k{ordre=2 : ODs places are distant from 2 borders}\cr
--k{ordre=k : ODs places are distant from k borders}\cr
+Argument `k` is to enter the number k of the contiguity matrix to be constructed ;\cr
+-ordre=1 : ODs places are adjacent, ie the flow have to cross only 1 boundary\cr
+-ordre=2 : ODs places are distant from 2 borders\cr
+-ordre=k : ODs places are distant from k borders\cr
 The function returns also the (k) number of the layer
 }
 \examples{

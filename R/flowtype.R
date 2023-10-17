@@ -25,7 +25,7 @@
 #' Param lowup is for reducing the matrix:\cr
 #' - lowup ="up" for triangular part above the main diagonal \cr
 #' - lowup = "low" for triangular part below the main diagonal\cr
-#' Param net is for extracting positive or negative flow values of the bilateral balance (bibal matrix):\cr 
+#' Param net is for extracting positive or negative flow values of the bilateral balance (bibalà matrix:\cr
 #' - net ="negative" values\cr
 #' - net ="positive" values\cr
 #' @import dplyr
@@ -66,61 +66,61 @@
 #' @export
 
 flowtype <- function(tab,origin=NULL,destination=NULL,fij=NULL,format, lowup, net,x) {
-  
+
   if (format == "M") {
-    
+
               if (nrow(tab) != ncol(tab)) {
                 warning("your matrix is not square")
               }
-          
+
               if (x == "flux") {
                 return(tab)
               }
-          
+
               if (x == "transpose") {
                 fji <- t(tab)
                 return(fji)
               }
-          
+
               if (x == "bivolum") {
                 fji <- t(tab)
                 vij <- tab + fji
                 return(vij)
               }
-          
+
               if (x == "bibal") {
                 fji <- t(tab)
                 sij <- tab - fji
                 return(sij)
               }
-              
+
               if(x== "bibal" || x== "biasym" || x== "bimin" || x == "bmax" || x == "birange" ){
                 message("This flow type is only available with the L format")
               }
-    
+
   }
-  
+
   if (format == "L") {
-    maxFij<-Fij<-Fji<-NULL 
-    minFij<-Fij<-Fji<-NULL 
-    
+    maxFij<-Fij<-Fji<-NULL
+    minFij<-Fij<-Fji<-NULL
+
     f1 <- tab %>% select(origin,destination,fij)
     names(f1) <- c("i", "j", "Fij")
-   
+
     f2<-tab %>% select(destination,origin,fij)
     names(f2) <- c("i", "j", "Fji")
-    
+
     tabflow <- merge(f1, f2, by = c("i", "j"), all.X = TRUE, all.Y = TRUE)
 
-    tabflow<- tabflow %>% 
-              mutate(FSij = .data$Fij + .data$Fji)%>% 
-              mutate(FBij = .data$Fji - .data$Fij) %>% 
-              mutate(FAij = .data$FBij/ .data$FSij) %>% 
+    tabflow<- tabflow %>%
+              mutate(FSij = .data$Fij + .data$Fji)%>%
+              mutate(FBij = .data$Fji - .data$Fij) %>%
+              mutate(FAij = .data$FBij/ .data$FSij) %>%
               mutate(minFij = ifelse(.data$Fij < .data$Fji, .data$Fij, .data$Fji)) %>%
               mutate(maxFij = ifelse(.data$Fij > .data$Fji, .data$Fij, .data$Fji)) %>%
               mutate(rangeFij = maxFij - minFij) %>%
               mutate(FDij = (.data$rangeFij)/.data$FSij)
-    
+
 
             if (missing(x)) {
               message("You must specify a choice of flow computation : alltypes, flux, transpose, bivolum ...")
@@ -128,87 +128,87 @@ flowtype <- function(tab,origin=NULL,destination=NULL,fij=NULL,format, lowup, ne
             if (x == "alltypes") {
               return(tabflow)
             }
-        
+
             if (x == "flux") {
               tabflow <- tabflow %>% select(.data$i,.data$j,.data$Fij)
               return(tabflow)
             }
-        
+
             if (x == "transpose") {
               tabflow <- tabflow %>% select(.data$i,.data$j,.data$Fji)
               return(tabflow)
             }
-        
+
             if (x == "bivolum") {
                     flow_gross <- tabflow %>% select(.data$i,.data$j,.data$FSij)
-                    
+
                     tab_up<-flowtabmat(flow_gross,matlist = "M")
                     temp_up<-lower.tri(tab_up, diag = FALSE)
-                    
+
                     tab_low<-flowtabmat(flow_gross,matlist = "M")
                     temp_low<-upper.tri(tab_low,diag=FALSE)
-                    
+
                     nbi<-dim(tab_up)[1]
                     nbj<-dim(tab_up)[2]
-                    
+
                     for (i in 1:nbi){
                       for (j in 1:nbj){
                         if (temp_up[i,j] == TRUE){tab_up[i,j]<-0 }
                         if (temp_low[i,j] == TRUE){tab_low[i,j]<-0 }
                       }}
-                    
+
                     tabflow_low<-cartograflow::flowtabmat(tab_low,matlist = "L")
                     tabflow_up<-cartograflow::flowtabmat(tab_up,matlist = "L")
-                    
+
                     if(missing(lowup)){return(flow_gross)}
-                    
+
                     if (lowup == "up"){
                       return(tabflow_up)}
-                    
+
                     if (lowup == "low"){
-                      return(tabflow_low)}    
+                      return(tabflow_low)}
             }
-                    
-    
+
+
             if (x == "bibal") {
               tabflow_net <- tabflow %>% select(.data$i,.data$j,.data$FBij)
-             
+
                   if (missing(net)){return(tabflow_net)}
-      
+
                   if (net == "negative"){
                   tabflow_net <- tabflow_net %>% filter(.data$FBij<0)
                   return(tabflow_net)}
-      
+
                   if (net == "positive") {
                   tabflow_net <- tabflow_net %>% filter(.data$FBij>=0)
                   return(tabflow_net)}
-            }  
-    
-    
+            }
+
+
             if (x == "biasym") {
               tabflow <- tabflow %>% select(.data$i,.data$j,.data$FAij)
               return(tabflow)
             }
-            
+
             if (x == "bimin") {
               tabflow <- tabflow %>% select(.data$i,.data$j,.data$minFij)
               return(tabflow)
             }
-            
+
             if (x == "bimax") {
               tabflow <- tabflow %>% select(.data$i,.data$j,.data$maxFij)
               return(tabflow)
             }
-            
+
             if (x == "birange") {
               tabflow <- tabflow %>% select(.data$i,.data$j,.data$rangeFij)
               return(tabflow)
             }
-            
+
             if (x == "bidisym") {
                 tabflow <- tabflow %>% select(.data$i,.data$j,.data$FDij)
                 return(tabflow)
               }
-    
+
           }
 }
